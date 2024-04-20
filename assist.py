@@ -95,7 +95,7 @@ def generate_tts(sentence, speech_file_path, model_id="eleven_multilingual_v2"):
     }
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer <Your-API-Key>"  # Use your actual API key here
+        "xi-api-key": "<YOUR_API_KEY>"  # Use your actual API key here
     }
     
     response = requests.request("POST", url, json=payload, headers=headers, params=querystring)
