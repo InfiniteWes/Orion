@@ -50,7 +50,7 @@ Added Eleven Labs Text to Speech instead of using Whisper, this way the user can
 whether having the AI sound like a character from a movie/video game, or even sound like themselves. 
 
 
-##Notes
+###Notes
 Ensure that your API keys and model access privileges are correctly configured before running the script.
 The quality of TTS output and the responsiveness of the assistant depend on the selected models and system performance.
 
