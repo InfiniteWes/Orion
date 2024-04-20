@@ -4,6 +4,7 @@ from pathlib import Path
 from pygame import mixer  # Load the popular external library
 import time
 import os
+import requests
 
 tts_enabled = True
 
@@ -72,33 +73,54 @@ def ask_question_memory(question):
     )
     return messages.data[0].content[0].text.value
 
-# Function to ask a question to the assistant with an image
+# Function to generate TTS and return the file path using ElevenLabs
+def generate_tts(sentence, speech_file_path, model_id="eleven_multilingual_v2"):
+    # change the query string desired value from 0 to 4 for latency optimization.
+    querystring={"optimize_streaming_latency":"<desired value>"}
+
+    """
+    Within the URL change the voice_id to your desired voice id key which
+    can be found at https://elevenlabs.io/app/voice-lab
+    """
+    url = "https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/stream"
+    payload = {
+        "text": sentence,
+        "model_id": model_id,
+        "voice_settings": {
+            "stability": 1, # Changes the voices stability or variety of speech.
+            "similarity_boost": 0.5, # Changes the similarity of the voice.
+            "style": 0.5, # Adds style to the voice, based off the original audio.
+            "use_speaker_boost": True
+        }
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer <Your-API-Key>"  # Use your actual API key here
+    }
+    
+    response = requests.request("POST", url, json=payload, headers=headers, params=querystring)
+    if response.status_code == 200:
+        with open(speech_file_path, 'wb') as f:
+            f.write(response.content)
+        return str(speech_file_path)
+    else:
+        return None
+
+# Function to perform Text-to-Speech and play it using mixer
+def TTS(text):
+    speech_file_path = Path("speech.mp3")
+    file_path = generate_tts(text, speech_file_path)
+    if file_path:
+        play_sound(file_path)
+        while mixer.music.get_busy():  # Wait for the mixer to finish
+            time.sleep(1)
+        mixer.music.unload()
+        os.remove(file_path)  # Delete the file after playing
+        return "done"
+    else:
+        return "Error in generating speech"
+
+# Function to play a sound file
 def play_sound(file_path):
     mixer.music.load(file_path)
     mixer.music.play()
-    
-    
-# Function to generate TTS for each sentence and play them
-def TTS(text):
-    speech_file_path = Path(f"speech.mp3")
-    speech_file_path = generate_tts(text, speech_file_path)
-    play_sound(speech_file_path)
-    while mixer.music.get_busy():  # Wait for the mixer to finish
-        time.sleep(1)
-    mixer.music.unload()
-    #delete the file after playing
-    os.remove(speech_file_path)
-
-    return "done"
-            
-
-# Function to generate TTS and return the file path
-def generate_tts(sentence, speech_file_path):
-    
-    response = client.audio.speech.create(
-        model="tts-1",
-        voice="echo",
-        input=sentence,
-    )
-    response.stream_to_file(speech_file_path)
-    return str(speech_file_path)
