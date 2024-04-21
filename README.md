@@ -51,6 +51,9 @@ For Eleven Labs configuration, adjust the stability, similarity boost, and the s
 Ensure that your API keys and model access privileges are correctly configured before running the script.
 The quality of TTS output and the responsiveness of the assistant depend on the selected models and system performance.
 
+## Authors
+### Original Author [Concept Bytes](https://github.com/Concept-Bytes)
+### Eleven Labs Rework [Infinite Wes](https://github.com/InfiniteWes)
 ## License
 Distributed under the MIT License. See LICENSE for more information.
 
