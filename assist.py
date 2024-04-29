@@ -4,6 +4,7 @@ from pathlib import Path
 from pygame import mixer  # Load the popular external library
 import time
 import os
+import tools
 import requests
 
 tts_enabled = True
@@ -46,6 +47,11 @@ def ask_question_standard(question):
 def ask_question_memory(question):
     global thread
     global thread_message
+
+    command_result = tools.parse_command(question)
+    if command_result:
+        return command_result
+
     thread_message = client.beta.threads.messages.create(
         thread.id,
         role="user",

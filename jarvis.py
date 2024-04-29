@@ -138,7 +138,7 @@ def main():
                         if text:
                             print("User: " + text)
                             print("ASKING AI")
-                            response = assist.ask_question_standard(text)
+                            response = assist.ask_question_memory(text)
                             print("AI: " + response)
                             speech = response.split("#")[0]
                             #check if there is a command
