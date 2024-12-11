@@ -11,16 +11,18 @@ tts_enabled = True
 # Initialize the client
 client = OpenAI()
 mixer.init()
+
 # Retrieve the assistant
 assistant = client.beta.assistants.retrieve("Insert_your_assistant_ID_here")
+
 #create empty thread
 jarvis_thread = "Insert_your_thread_id_here"
 thread = client.beta.threads.retrieve(jarvis_thread)
 
 # Function to ask a question to the assistant
 def ask_question_standard(question):
-    #this is an example of how you can feed in context
-    #Hint LLMs won't know the time or date unless you tell them
+    # This is an example of how you can feed in context
+    # Hint LLMs won't know the time or date unless you tell them
     date_and_time = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
     context = """
     You are an assistant named Jarvis like from the ironman movies. 
@@ -87,15 +89,15 @@ def generate_tts(sentence, speech_file_path, model_id="eleven_multilingual_v2"):
         "text": sentence,
         "model_id": model_id,
         "voice_settings": {
-            "stability": 1, # Changes the voices stability or variety of speech.
-            "similarity_boost": 0.5, # Changes the similarity of the voice.
-            "style": 0.5, # Adds style to the voice, based off the original audio.
+            "stability": 1,                                                           # Changes the voices stability or variety of speech.
+            "similarity_boost": 0.5,                                                  # Changes the similarity of the voice.
+            "style": 0.5,                                                             # Adds style to the voice, based off the original audio.
             "use_speaker_boost": True
         }
     }
     headers = {
         "Content-Type": "application/json",
-        "xi-api-key": "<YOUR_API_KEY>"  # Use your actual API key here
+        "xi-api-key": "<YOUR_API_KEY>"                                                # Use your actual API key here
     }
     
     response = requests.request("POST", url, json=payload, headers=headers, params=querystring)
@@ -112,10 +114,10 @@ def TTS(text):
     file_path = generate_tts(text, speech_file_path)
     if file_path:
         play_sound(file_path)
-        while mixer.music.get_busy():  # Wait for the mixer to finish
+        while mixer.music.get_busy():                                                 # Wait for the mixer to finish
             time.sleep(1)
         mixer.music.unload()
-        os.remove(file_path)  # Delete the file after playing
+        os.remove(file_path)                                                          # Delete the file after playing
         return "done"
     else:
         return "Error in generating speech"
